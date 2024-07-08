@@ -11,8 +11,14 @@ pub struct ThreadPool {
 type Job = Box<dyn FnOnce() + Send + 'static>;
 
 impl ThreadPool {
+    /// Create a new ThreadPool.
+    ///
+    /// The size is the number of threads in the pool.
+    ///
+    /// # Panics
+    ///
+    /// The `new` function will panic if the size is zero.
     pub fn new(size: usize) -> ThreadPool {
-
         assert!(size > 0);
 
         let (sender, receiver) = mpsc::channel();
@@ -39,7 +45,6 @@ impl ThreadPool {
 
         self.sender.as_ref().unwrap().send(job).unwrap();
     }
-
 }
 
 impl Drop for ThreadPool {
