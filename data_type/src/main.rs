@@ -1,36 +1,41 @@
+use std::io;
+
 fn main() {
-    let condition = true;
+    // loop 반복문
+    loop {
+        // 다른 언어의 while (true)와 같다
+        println!("숫자를 입력해주세요. 0을 입력하면 종료합니다.");
+        let mut read = String::new();
+        io::stdin().read_line(&mut read).unwrap();
+        let val: i32 = read.trim().parse().unwrap();
 
-    // if 표현식
-    if condition == true {
-        println!("조건이 참입니다.");
-    } else {
-        println!("조건이 거짓입니다.");
+        if val == 0 {
+            break; // 종료
+        }
+
+        println!("입력={}", val);
     }
+    println!("");
 
-    // let if 표현식
-    let ret = if condition == true {
-        String::from("조건이 참입니다.") // ; 를 붙이면 컴파일 오류가 발생한다.
-    } else {
-        String::from("조건이 거짓입니다.") // ; 를 붙이면 컴파일 오류가 발생한다.
-    }; // 여기에 ; 를 붙여야 한다
-    println!("ret={}", ret);
-
-    let var = 1;
-    // match 표현식
-    match var {
-        // var 값을 사용해 분기합니다.
-        1 => println!("하나"),
-        2 => println!("둘"),
-        _ => println!("기타"),
+    // for 반복문
+    let arr = [1, 2, 3, 4, 5];
+    for a in arr {
+        // arr를 순회한다.
+        print!("{}, ", a);
     }
+    println!("");
 
-    // let match 표현식
-    let ret = match var {
-        // match의 결과를 ret에 저장한다.
-        1 => String::from("하나"),
-        2 => String::from("둘"),
-        _ => String::from("기타"),
-    }; // ; 를 붙여야 한다
-    println!("ret={}", ret);
+    for a in 0..5 {
+        // arr를 순회한다.
+        print!("{}, ", a);
+    }
+    println!("");
+
+    // while 반복문
+    let mut counter = 0;
+    while counter < 5 {
+        print!("{}, ", counter);
+        counter += 1;
+    }
+    println!("");
 }
