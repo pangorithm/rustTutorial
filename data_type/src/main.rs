@@ -1,24 +1,16 @@
 fn main() {
-    let arr1 = [1, 2, 3, 4, 5];
+    // 문자열 리터럴을 사용
+    let s: &str = "Hello 러스트!"; // 메모리에 저장된 문자열의 주소를 참조로 사용하기 때문에 항상 &str 형태로 사용된다.
 
-    for a in arr1 {
-        println!("{}", a);
-    }
-    println!("");
+    println!("문자열: {}", s);
 
-    let arr2: [i32; 5] = [1, 2, 3, 4, 5];
+    // 문자열 슬라이싱
+    let slice: &str = &s[0..5];
+    println!("슬라이스: {}", slice);
 
-    for i in 0..arr2.len() {
-        println!("{}", arr2[i]);
-    }
-    println!("");
-
-    std::env::set_var("RUST_BACKTRACE", "1"); // RUST_BACKTRACE 활성화. cargo run으로 실행 시, RUST_BACKTRACE=1 cargo run으로 실행한 것과 같다.
-    use std::io;
-    let arr3: [i32; 5] = [1, 2, 3, 4, 5];
-    println!("숫자를 입력해주세요.");
-    let mut read = String::new();
-    io::stdin().read_line(&mut read).unwrap();
-    let index: i32 = read.trim().parse().unwrap();
-    println!("arr3[{}]={}", index, arr3[index as usize]);
+    // 문자열 변환
+    let str: &str = "  Hello Rust  ";
+    println!("{}", str.trim());
+    println!("{}", str.to_lowercase());
+    println!("{}", str.to_uppercase());
 }
