@@ -1,6 +1,9 @@
 fn main() {
-    let mut s = String::from("Hello"); // Hello로 String 생성
-    println!("{}", s);
-    s.push_str(" Rust!"); // s뒤에 Rust! 추가
-    println!("{}", s);
+    // let var = 1; // 불변 변수 생성
+    // var = 2; // 컴파일 오류 발생
+
+    let mut var = 1;
+    println!("수정 전={}", var);
+    var = 2;
+    println!("수정 후={}", var);
 }
