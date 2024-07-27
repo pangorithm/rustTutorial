@@ -1,26 +1,24 @@
 fn main() {
-    print_add(1, 2);
+    // 클로저 기초 예제
+    let mut x = 5;
+    let mut inc = || {
+        x += 1;
+    }; // 할당문이므로 ; 이 필요하다
+    inc();
+    println!("변수 x: {}", x);
 
-    let ret = return_add(2, 3);
-    println!("2+3={}", ret);
+    // 클로저에 파라미터 정의
+    let x = 10;
+    let add = |y| x + y; // add는 클로저 함수가 된다.
+    println!("10+5={}", add(5));
 
-    let x = 3;
-    let y = 4;
-    // 익명함수
-    let ret = {
-        // 익명함수의 반환값을 ret에 저장한다.
-        x + y
-    }; // ; 이 필요하다.
+    // move 키워드를 사용해 클로저의 소유권 이전
+    let s = String::from("Hello");
+    let f = move || {
+        // move 클로저는 소유권을 이전한다.
+        println!("s: {}", s); // 여기서 s의 소유권을 가져간다.
+    }; // 할당문이므로 ; 이 필요하다
 
-    println!("{}+{}={}", x, y, ret);
-}
-
-// 함수
-fn print_add(x: i32, y: i32) {
-    println!("{}+{}={}", x, y, (x + y));
-}
-
-// 값을 반환하는 함수
-fn return_add(x: i32, y: i32) -> i32 {
-    x + y // ; 이 없다.
+    f();
+    //println!("s: {}", s); // 컴파일 오류: s의 소유권이 없습니다.
 }
