@@ -1,26 +1,14 @@
-enum Message {
-    Quit,
-    List(i32),
-    Put(String),
-    Get(i32),
-}
-
-impl Message {
-    fn execute(&self) {
-        match self {
-            // self에 따라 분기
-            Message::Quit => println!("Quit"),
-            Message::List(val) => println!("List: {}", val),
-            Message::Put(val) => println!("Put: {}", val),
-            Message::Get(val) => println!("Get: {}", val),
-        }
+fn print_optional(val: Option<String>) {
+    match val {
+        Some(val) => println!("{}", val),
+        None => println!("None"),
     }
 }
 
 fn main() {
-    let m = Message::Put(String::from("/root/"));
-    m.execute();
+    let some_string = Some(String::from("러스트"));
+    let none_string: Option<String> = None;
 
-    let m = Message::List(33);
-    m.execute();
+    print_optional(some_string);
+    print_optional(none_string);
 }
