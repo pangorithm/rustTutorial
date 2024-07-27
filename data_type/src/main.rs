@@ -1,41 +1,26 @@
-use std::io;
-
 fn main() {
-    // loop 반복문
-    loop {
-        // 다른 언어의 while (true)와 같다
-        println!("숫자를 입력해주세요. 0을 입력하면 종료합니다.");
-        let mut read = String::new();
-        io::stdin().read_line(&mut read).unwrap();
-        let val: i32 = read.trim().parse().unwrap();
+    print_add(1, 2);
 
-        if val == 0 {
-            break; // 종료
-        }
+    let ret = return_add(2, 3);
+    println!("2+3={}", ret);
 
-        println!("입력={}", val);
-    }
-    println!("");
+    let x = 3;
+    let y = 4;
+    // 익명함수
+    let ret = {
+        // 익명함수의 반환값을 ret에 저장한다.
+        x + y
+    }; // ; 이 필요하다.
 
-    // for 반복문
-    let arr = [1, 2, 3, 4, 5];
-    for a in arr {
-        // arr를 순회한다.
-        print!("{}, ", a);
-    }
-    println!("");
+    println!("{}+{}={}", x, y, ret);
+}
 
-    for a in 0..5 {
-        // arr를 순회한다.
-        print!("{}, ", a);
-    }
-    println!("");
+// 함수
+fn print_add(x: i32, y: i32) {
+    println!("{}+{}={}", x, y, (x + y));
+}
 
-    // while 반복문
-    let mut counter = 0;
-    while counter < 5 {
-        print!("{}, ", counter);
-        counter += 1;
-    }
-    println!("");
+// 값을 반환하는 함수
+fn return_add(x: i32, y: i32) -> i32 {
+    x + y // ; 이 없다.
 }
