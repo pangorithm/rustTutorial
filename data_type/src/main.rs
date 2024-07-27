@@ -1,11 +1,18 @@
 fn main() {
-    let number = 30; // 32비트 정수, let number: i32 = 30;으로 선언한 것과 같다.
-    let long_number: i64 = 123456789123456789; // 64비트 정수
-    let real = 10.22; // 실수
-    let hangul_char = '러'; // 문자형
+    // 정수
+    println!("i8: MIN = {}, i8: MAX = {}", i8::MIN, i8::MAX);
+    println!("i16: MIN = {}, i16: MAX = {}", i16::MIN, i16::MAX);
+    println!("i32: MIN = {}, i32: MAX = {}", i32::MIN, i32::MAX);
+    println!("i64: MIN = {}, i64: MAX = {}", i64::MIN, i64::MAX);
+    println!("i128: MIN = {}, i128: MAX = {}", i128::MIN, i128::MAX);
 
-    println!("32비트 정수: {}", number);
-    println!("64비트 정수: {}", long_number);
-    println!("32비트 실수: {}", real);
-    println!("문자: {}", hangul_char);
+    println!("u8: MIN = {}, u8: MAX = {}", u8::MIN, u8::MAX);
+    println!("u16: MIN = {}, u16: MAX = {}", u16::MIN, u16::MAX);
+    println!("u32: MIN = {}, u32: MAX = {}", u32::MIN, u32::MAX);
+    println!("u64: MIN = {}, u64: MAX = {}", u64::MIN, u64::MAX);
+    println!("u128: MIN = {}, u128: MAX = {}", u128::MIN, u128::MAX);
+
+    // 부동소수점형
+    println!("f32: MIN = {}, f32: MAX = {}", f32::MIN, f32::MAX);
+    println!("f64: MIN = {}, f64: MAX = {}", f64::MIN, f64::MAX);
 }
