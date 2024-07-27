@@ -1,19 +1,26 @@
-fn main() {}
-
-// 열거형 확장
-struct ElementarySchool {
-    room: String,
-}
-struct MiddleSchool {
-    teacher: String,
-}
-struct HighSchool {
-    id: i32,
+enum Message {
+    Quit,
+    List(i32),
+    Put(String),
+    Get(i32),
 }
 
-enum SchoolKind {
-    // 각 열거자에 구조체를 할당
-    Elementary(ElementarySchool),
-    Middle(MiddleSchool),
-    High(HighSchool),
+impl Message {
+    fn execute(&self) {
+        match self {
+            // self에 따라 분기
+            Message::Quit => println!("Quit"),
+            Message::List(val) => println!("List: {}", val),
+            Message::Put(val) => println!("Put: {}", val),
+            Message::Get(val) => println!("Get: {}", val),
+        }
+    }
+}
+
+fn main() {
+    let m = Message::Put(String::from("/root/"));
+    m.execute();
+
+    let m = Message::List(33);
+    m.execute();
 }
