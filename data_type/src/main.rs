@@ -5,14 +5,19 @@ struct Score {
 }
 
 impl Score {
+    // 메서드 정의
     fn get_grade(&self) -> String {
         if self.score > 90 {
             String::from("A")
-        } else if self.score > 80 {
+        } else if self.score >= 80 {
             String::from("B")
         } else {
             String::from("C")
         }
+    }
+
+    fn from(score: i32) -> Score {
+        Score { score: score }
     }
 }
 
@@ -30,4 +35,8 @@ fn test_get_grade() {
 
     // score.get_grade가 "A"를 반환하는지 검사
     assert_eq!(score.get_grade(), "B");
+
+    // 연관함수
+    assert_eq!(Score::from(100).get_grade(), "A");
+    assert_eq!(Score::from(80).get_grade(), "B");
 }
