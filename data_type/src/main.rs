@@ -1,49 +1,28 @@
-use std::cell::RefCell;
-use std::rc::{Rc, Weak};
-
-struct Person {
-    id: i32,
-    next: RefCell<Option<Weak<Person>>>,
+// 런타임에 판단해 빌림을 반환하는 케이스
+// x, y, 반환 타입 모두 소멸 시점이 명확히 드러나지 않아 컴파일 오류 발생
+// error[E0106]: missing lifetime specifier
+/*
+fn longest(x: &str, y: &str) -> &str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
 }
+*/
 
-// 참조 횟수가 0이 되는 순간 호출됨
-impl Drop for Person {
-    fn drop(&mut self) {
-        println!("p{} Drop!", self.id);
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
     }
 }
 
 fn main() {
-    let mut p1 = Rc::new(Person {
-        id: 1,
-        next: RefCell::new(None),
-    });
+    let s1 = String::from("Hello");
+    let s2 = String::from("Rust");
 
-    let mut p2 = Rc::new(Person {
-        id: 2,
-        next: RefCell::new(None),
-    });
-
-    println!(
-        "p1 RefCount: {}, p2 RefCount: {}",
-        Rc::strong_count(&p1),
-        Rc::strong_count(&p2)
-    );
-    // p1 RefCount:1, p2 RefCount:1
-
-    // 순환참조 발생
-    let mut next = p1.next.borrow_mut();
-    *next = Some(Rc::downgrade(&p2)); // Rc 타입의 참조를 Weak 타입으로 변환한다.
-
-    let mut next = p2.next.borrow_mut();
-    *next = Some(Rc::downgrade(&p2)); // Rc 타입의 참조를 Weak 타입으로 변환한다.
-
-    println!(
-        "p1 RefCount: {}, p2 RefCount: {}",
-        Rc::strong_count(&p1),
-        Rc::strong_count(&p2)
-    );
-    // p1 RefCount:1, p2 RefCount:1
-    // p2 Drop!
-    // p1 Drop!
+    let result = longest(&s1, &s2);
+    println!("{}와 {} 중 더 긴 문자열은 '{}'", s1, s2, result); // Hello와 Rust 중 더 긴 문자열은 'Hello'
 }
