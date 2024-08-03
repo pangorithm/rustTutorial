@@ -76,7 +76,11 @@ impl DoubleLinkedList {
         // 전체를 순회하면서 값을 출력
         loop {
             let t = currunt.clone();
-            println!("item: {}", t.borrow().item);
+            println!(
+                "item: {}, RefCount: {}",
+                t.borrow().item,
+                Rc::strong_count(&t)
+            );
             currunt = match &(t.borrow().next) {
                 Some(n) => n.clone(),
                 None => {
