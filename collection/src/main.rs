@@ -1,9 +1,7 @@
 fn main() {
-    let mut eng = String::new();
-    eng.push_str("hello");
-    let chn = "你好".to_string();
-    let kor = String::from("안녕하세요");
-
-    println!("{}, {}, {}", eng, chn, kor);
+    let str = String::from("안녕");
+    let idx = 123;
+    let s = format!("{} {}", str, idx); // str과 idx를 결함한다.
+    println!("{}", s);
+    // 안녕 123
 }
-// hello, 你好, 안녕하세요
