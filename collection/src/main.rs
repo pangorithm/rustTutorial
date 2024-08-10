@@ -1,7 +1,7 @@
 fn main() {
-    let str = String::from("안녕");
-    let idx = 123;
-    let s = format!("{} {}", str, idx); // str과 idx를 결함한다.
-    println!("{}", s);
-    // 안녕 123
+    let txt = String::from("안녕하세요");
+    for c in txt.chars() {
+        print!("{} ", c);
+    }
+    // 안 녕 하 세 요
 }
