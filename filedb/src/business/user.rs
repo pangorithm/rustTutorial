@@ -1,3 +1,4 @@
+use crate::database::file_db;
 use std::collections::HashMap;
 
 pub struct User {
@@ -57,5 +58,18 @@ impl UserManager {
         }
 
         return v; // 사용자 참조를 담은 벡터 반환
+    }
+
+    pub fn save(&mut self) {
+        file_db::save(String::from("file.db"), self.get_all());
+    }
+
+    pub fn load(&mut self) {
+        let user_vec = file_db::load(String::from("file.db"));
+        self.user_map = HashMap::new();
+
+        for user in user_vec.iter() {
+            self.add_user(user.id, user.age, user.name.clone());
+        }
     }
 }
