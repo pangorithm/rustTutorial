@@ -10,6 +10,7 @@ fn main() {
         print!("{}, ", i);
     }
     // 1, 2, 3,
+    println!("");
 
     list = LinkedList::new();
     for i in 0..10 {
@@ -29,4 +30,8 @@ fn main() {
         i += 1;
     }
     println!("target: {:?}", target);
+    // target: 9
+
+    println!("iterator target: {:?}", list.iter().nth(9));
+    // iterator target: Some(9)
 }
