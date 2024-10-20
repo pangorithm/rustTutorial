@@ -1,24 +1,22 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::sync::mpsc;
 use std::thread;
 
 fn main() {
-    let handle = thread::spawn(|| {
-        // 새로운 스레드를 생성하고 그 핸들을 받습니다.
-        let file = File::open("file.txt").unwrap(); // "file.txt" 파일을 엽니다.
-        let reader = BufReader::new(file); // 버퍼링을 사용해 파일을 읽습니다.
-        for line in reader.lines() {
-            // 파일의 각 줄을 순회합니다.
-            let txt = line.unwrap(); // 줄을 텍스트로 읽습니다.
-            println!("{}", txt);
+    // mpsc 채널을 생성합니다. tx는 송신자, rx는 수신자입니다.
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let mut sum = 0;
+
+        for i in 1..101 {
+            sum = sum + i;
         }
+
+        // 계산된 합을 채널로 보냅니다.
+        tx.send(sum).unwrap();
     });
 
-    match handle.join() {
-        // join의 결과를 확인해 예외처리
-        Ok(_) => {}
-        Err(e) => {
-            println!("스레드 내부에서 오류가 발생했습니다. {:?}", e);
-        }
-    };
+    // 채널에서 메시지를 수신합니다.
+    let sum = rx.recv().unwrap();
+    println!("1부터 100까지의 합: {}", sum);
 }
