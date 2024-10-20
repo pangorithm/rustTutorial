@@ -1,39 +1,15 @@
-use std::sync::mpsc;
-use std::thread;
+use futures::executor::block_on;
+
+// async 키워드를 사용해 비동기 함수를 정의합니다.
+async fn hello_world() {
+    println!("future 안에서 실행");
+}
 
 fn main() {
-    // mpsc 채널을 생성합니다. tx는 송신자, rx는 수신자입니다.
-    let (tx1, rx) = mpsc::channel();
-    let tx2 = mpsc::Sender::clone(&tx1); // tx1 복제
+    let future = hello_world(); // 함수가 바로 호출되지 않습니다.
+    println!("main 안에서 실행");
 
-    // 1부터 50까지의 합
-    thread::spawn(move || {
-        let mut sum = 0;
-
-        for i in 1..51 {
-            sum = sum + i;
-        }
-
-        // 계산된 합을 채널로 보냅니다.
-        tx1.send(sum).unwrap();
-    });
-
-    // 51부터 100까지의 합
-    thread::spawn(move || {
-        let mut sum = 0;
-
-        for i in 51..101 {
-            sum = sum + i;
-        }
-
-        // 계산된 합을 채널로 보냅니다.
-        tx2.send(sum).unwrap();
-    });
-
-    let mut sum = 0;
-    for val in rx {
-        println!("수신: {}", val);
-        sum = sum + val;
-    }
-    println!("1부터 100까지의 합: {}", sum);
+    // future를 실행합니다. hello_world가 종료될 때까지 main thread는 멈춥니다.
+    block_on(future);
+    println!("future 종료 이후 실행");
 }
