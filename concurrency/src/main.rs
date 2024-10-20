@@ -1,15 +1,19 @@
 use futures::executor::block_on;
 
 // async 키워드를 사용해 비동기 함수를 정의합니다.
-async fn hello_world() {
-    println!("future 안에서 실행");
+async fn calc_sum(start: i32, end: i32) -> i32 {
+    let mut sum = 0;
+
+    for i in start..=end {
+        sum += i;
+    }
+
+    sum
 }
 
 fn main() {
-    let future = hello_world(); // 함수가 바로 호출되지 않습니다.
-    println!("main 안에서 실행");
+    let future = calc_sum(1, 100);
 
-    // future를 실행합니다. hello_world가 종료될 때까지 main thread는 멈춥니다.
-    block_on(future);
-    println!("future 종료 이후 실행");
+    let sum = block_on(future);
+    println!("1부터 100까지의 합: {}", sum);
 }
