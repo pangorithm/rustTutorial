@@ -1,10 +1,19 @@
 use futures::executor::block_on;
+use std::thread;
+use std::time::Duration;
 
-// async 키워드를 사용해 비동기 함수를 정의합니다.
+async fn sleep_10sec() {
+    for i in 1..10 {
+        println!(".");
+        thread::sleep(Duration::from_millis(1000)); // 1초간 10회 대기
+    }
+}
+
 async fn calc_sum(start: i32, end: i32) -> i32 {
     let mut sum = 0;
 
     for i in start..=end {
+        println!("{} ", i);
         sum += i;
     }
 
@@ -12,16 +21,15 @@ async fn calc_sum(start: i32, end: i32) -> i32 {
 }
 
 async fn calc() -> i32 {
-    let sum1_50 = calc_sum(1, 50).await;        // await 키워드를 사용해 결과를 얻습니다.
-    let sum51_100 = calc_sum(51, 100).await;    // await 키워드를 사용해 결과를 얻습니다.
-    let ret = sum1_50 + sum51_100;
+    let f1 = sleep_10sec();
+    let f2 = calc_sum(1, 10);
+    let (_, sum) = futures::join!(f1, f2); // f1과 f2가 끝나기를 기다린다.
 
-    ret
+    sum
 }
 
 fn main() {
     let future = calc();
-
     let sum = block_on(future);
-    println!("1부터 100까지의 합: {}", sum);
+    println!("1부터 10까지의 합: {}", sum);
 }
