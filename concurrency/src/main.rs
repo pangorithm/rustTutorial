@@ -1,29 +1,22 @@
 use std::sync::{Arc, Mutex};
-use tokio::sync::Semaphore;
+use std::thread;
 
-static counter: Mutex<i32> = Mutex::new(0); // conuter를 전역 변수로 정의
-
-#[tokio::main]
-async fn main() {
-    // 동시에 2개의 스레드가 접근 가능하도록 세마포어 설정
-    let semaphore = Arc::new(Semaphore::new(2));
-    let mut future_vec = vec![];
+fn main() {
+    let counter = Arc::new(Mutex::new(0)); // 공유될 카운터를 Arc와 Mutex로 감싸준다.
+    let mut thread_vec = vec![]; // 스레드를 저장할 벡터
 
     for _ in 0..100 {
-        // 세마포어 획득
-        let permit = semaphore.clone().acquire_owned().await.unwrap();
-        let future = tokio::spawn(async move {
-            let mut num = counter.lock().unwrap(); // 뮤텍스로부터 안전한 참조를 획득
-            *num = *num + 1; // 카운터 증가
-
-            drop(permit); // 세마포어 해제
+        let _cnt = counter.clone(); // 현재 카운터의 클론을 생성한다. Arc를 사용하면 여러 스레드 간에 안전하게 공유할 수 있다.
+        let th = thread::spawn(move || {
+            let mut num = _cnt.lock().unwrap(); // 뮤텍스로부터 안전하게 락을 얻어와 참조를 획득한다.
+            *num = *num + 1;
         });
-        future_vec.push(future); // 생성된 future를 벡터에 저장
+        thread_vec.push(th);
     }
 
-    for future in future_vec {
-        future.await.unwrap(); // 모든 future가 완료될 때까지 대기
+    for th in thread_vec {
+        th.join().unwrap(); // 모든 스레드가 완료될 때까지 기다린다.
     }
 
-    println!("결과: {}", *counter.lock().unwrap()); // 최종 결과 출력
+    println!("결과: {}", *counter.lock().unwrap()); // 최종 카운터 값을 출력한다.
 }
