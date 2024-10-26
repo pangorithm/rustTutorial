@@ -1,19 +1,24 @@
-use std::io;
+use std::sync::Mutex;
+use std::thread;
+
+static counter: Mutex<i32> = Mutex::new(0); // conuter를 전역 변수로 정의
+
+fn inc_counter() {
+    let mut num = counter.lock().unwrap();
+    *num = *num + 1;
+} // inc_counter를 벗어나는 순간 counter는 unlock됩니다.
 
 fn main() {
-    println!("아무 내용이나 입력하세요. quit를 입력하면 종료됩니다.");
+    let mut thread_vec = vec![];
 
-    loop {
-        // 무한 반복해 이벤트를 처리
-        let mut buf = String::new();
-        io::stdin().read_line(&mut buf).unwrap();
-
-        let input = buf.trim();
-        if input == "quit" {
-            // 이벤틀을 처리합니다.
-            break;
-        }
-
-        println!("입력: {}", input);
+    for _ in 0..100 {
+        let th = thread::spawn(inc_counter); // counter를 증가합니다.
+        thread_vec.push(th);
     }
+
+    for th in thread_vec {
+        th.join().unwrap();
+    }
+
+    println!("결과: {}", *counter.lock().unwrap()); // counter 값을 획득합니다.
 }
