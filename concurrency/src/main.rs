@@ -2,21 +2,25 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 fn main() {
-    let counter = Arc::new(Mutex::new(0)); // 공유될 카운터를 Arc와 Mutex로 감싸준다.
-    let mut thread_vec = vec![]; // 스레드를 저장할 벡터
+    let lock_a = Arc::new(Mutex::new(0));
+    let lock_b = Arc::new(Mutex::new(0));
 
-    for _ in 0..100 {
-        let _cnt = counter.clone(); // 현재 카운터의 클론을 생성한다. Arc를 사용하면 여러 스레드 간에 안전하게 공유할 수 있다.
-        let th = thread::spawn(move || {
-            let mut num = _cnt.lock().unwrap(); // 뮤텍스로부터 안전하게 락을 얻어와 참조를 획득한다.
-            *num = *num + 1;
-        });
-        thread_vec.push(th);
-    }
+    let lock_a_ref = lock_a.clone();
+    let lock_b_ref = lock_a.clone();
 
-    for th in thread_vec {
-        th.join().unwrap(); // 모든 스레드가 완료될 때까지 기다린다.
-    }
+    let thread1 = thread::spawn(move || {
+        // 강제로 교착상태를 만든다.
+        let a = lock_a.lock().unwrap();
+        let b = lock_b_ref.lock().unwrap(); // lock_b는 thread2에 의해 잠겨있는 상태
+    });
 
-    println!("결과: {}", *counter.lock().unwrap()); // 최종 카운터 값을 출력한다.
+    let thread2 = thread::spawn(move || {
+        let a = lock_b.lock().unwrap();
+        let b = lock_a_ref.lock().unwrap(); // lock_a는 thread1에 의해 잠겨있는 상태
+    });
+
+    thread1.join().unwrap();
+    thread2.join().unwrap();
+
+    println!("프로그램 종료");
 }
