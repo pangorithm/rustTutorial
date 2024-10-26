@@ -1,24 +1,13 @@
-use tokio::fs::File;
-use tokio::io::{stdin, BufReader, AsyncBufReadExt};
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 
-#[tokio::main]
-async fn main() {
-    let mut reader = BufReader::new(stdin());
-    let mut lines = reader.lines();
+fn main() {
+    let file = File::open("input.txt").unwrap();
+    let reader = BufReader::new(file); // BufReader를 생성합니다.
 
-    loop { // quit가 입력될 때까지 입력을 받음
-        match lines.next_line().await.unwrap() {
-            Some(input) => {
-                println!("입력: {}", input);
-
-                if input == "quit" { // quit을 입력받으면 종료합니다.
-                    break;
-                }
-            }
-            None => {
-                break;
-            }
-        };
-
+    for line in reader.lines() {
+        // file을 읽습니다.
+        let line = line.unwrap();
+        println!("{}", line);
     }
 }
