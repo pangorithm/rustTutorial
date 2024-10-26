@@ -1,15 +1,22 @@
-use hyper::{body::HttpBody as _, Client};
-use tokio::io::{stdout, AsyncWriteExt as _};
+use hyper::body::{self, Buf};
+use hyper::{client, Client};
+use serde::Deserialize;
+
+#[derive(Deserialize, Debug)]
+struct User {
+    id: i32,
+    name: String,
+}
 
 #[tokio::main]
 async fn main() {
-    let client = Client::new();
-    let uri = "http://httpbin.org/ip".parse().unwrap();
-    let mut resp = client.get(uri).await.unwrap(); // HTTP 요청을 보냅니다.
-    println!("Response: {}", resp.status());
+    let url = "http://jsonplaceholder.typicode.com/users".parse().unwrap();
 
-    while let Some(chunk) = resp.body_mut().data().await {
-        // body 값을 확인합니다.
-        stdout().write_all(&chunk.unwrap()).await.unwrap();
-    }
+    let client = Client::new();
+    let res = client.get(url).await.unwrap();
+    let body = hyper::body::aggregate(res).await.unwrap();
+
+    let users: Vec<User> = serde_json::from_reader(body.reader()).unwrap(); // 받은 JSON을 serde로 역직렬화
+
+    println!("사용자: {:#?}", users);
 }
