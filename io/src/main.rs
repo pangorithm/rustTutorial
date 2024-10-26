@@ -1,13 +1,16 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
+struct Point {
+    x: i32,
+    y: i32,
+}
 
 fn main() {
-    let file = File::open("input.txt").unwrap();
-    let reader = BufReader::new(file); // BufReader를 생성합니다.
+    let pt = Point { x: 10, y: 20 };
+    let json = serde_json::to_string(&pt).unwrap(); // pt를 json으로 변환
+    println!("json: {}", json);
 
-    for line in reader.lines() {
-        // file을 읽습니다.
-        let line = line.unwrap();
-        println!("{}", line);
-    }
+    let pt: Point = serde_json::from_str(&json).unwrap(); // json을 사용해 Point를 생성
+    println!("point: [{}, {}]", pt.x, pt.y);
 }
