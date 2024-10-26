@@ -1,16 +1,23 @@
-use serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize)]
-struct Point {
-    x: i32,
-    y: i32,
-}
+use sqlite;
+use sqlite::State;
 
 fn main() {
-    let pt = Point { x: 10, y: 20 };
-    let json = serde_json::to_string(&pt).unwrap(); // pt를 json으로 변환
-    println!("json: {}", json);
+    let connection = sqlite::open(":memory:").unwrap(); // 메모리에 sqlite db를 생성
 
-    let pt: Point = serde_json::from_str(&json).unwrap(); // json을 사용해 Point를 생성
-    println!("point: [{}, {}]", pt.x, pt.y);
+    let query = "
+      CREATE TABLE users (name TEXT, age INTEGER);
+      INSERT INTO users VALUES ('루나', 3);
+      INSERT INTO users VALUES ('러스트', 13);
+    ";
+    connection.execute(query).unwrap(); // 테이블 생성 쿼리를 실행
+
+    let query = "SELECT * FROM users WHERE age > ?"; // ?는 1에 바인딩 됨
+    let mut statement = connection.prepare(query).unwrap(); // 쿼리를 실행
+    statement.bind((1, 5)).unwrap(); // age > 5
+
+    while let Ok(State::Row) = statement.next() {
+        // 테이블의 데이터를 조회
+        println!("name = {}", statement.read::<String, _>("name").unwrap());
+        println!("age = {}", statement.read::<i64, _>("age").unwrap());
+    }
 }
