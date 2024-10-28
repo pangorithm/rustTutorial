@@ -1,31 +1,27 @@
-#[derive(Debug)]
 struct Person {
     name: String,
     age: u32,
 }
 
-impl AsRef<str> for Person {
-    // Person의 name을 str 형태로 참조 할 수 있다.
-    fn as_ref(&self) -> &str {
-        &self.name // String이 Deref 트레이트를 통해 &str로 자동 변환
+impl AsMut<String> for Person {
+    fn as_mut(&mut self) -> &mut String {
+        &mut self.name
     }
 }
 
-fn greet_person<P: AsRef<str>>(person: P) {
-    println!("안녕! {}", person.as_ref());
+fn name_change<P: AsMut<String>>(person: &mut P, new_name: &str) {
+    let name = person.as_mut();
+    name.clear();
+    name.push_str(new_name);
 }
 
 fn main() {
-    let person = Person {
+    let mut person = Person {
         name: String::from("루나"),
-        age: 30,
+        age: 10,
     };
 
-    // Person 구조체에 AsRef<str>을 구현했기 때문에,
-    // greet_person 함수는 Person을 인자로 받아 사용할 수 있다
-    greet_person(person);
-
-    // String과 &str도 greet_person 함수 호출이 가능하다.
-    greet_person(String::from("러스트"));
-    greet_person("하이!");
+    println!("변경 전: {}", person.name);
+    name_change(&mut person, "러스트");
+    println!("변경 후: {}", person.name);
 }
