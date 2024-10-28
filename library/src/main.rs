@@ -1,17 +1,28 @@
-struct Book {
-    title: String,
+#[derive(Debug)]
+struct Point {
+    x: i32,
+    y: i32,
 }
 
-impl Drop for Book {
-    fn drop(&mut self) {
-        println!("Book 객체 해제: {}", self.title);
+impl From<(i32, i32)> for Point {
+    fn from(tuple: (i32, i32)) -> Self {
+        Point {
+            x: tuple.0,
+            y: tuple.1,
+        }
     }
 }
 
 fn main() {
-    {
-        let book = Book {
-            title: String::from("러스트"),
-        };
-    } // book이 스코프를 벗어나며 book의 Drop 트레잇이 자동으로 호출된다.
+    let tuple = (1, 2);
+
+    // 주어진 tuple을 바탕으로 Point 객체 생성
+    let pt: Point = Point::from(tuple);
+
+    println!("Point::from = {:?}", pt);
+
+    // tuple을 기반으로 point를 생성. 이때 Point::from이 호출된다.
+    let pt: Point = tuple.into();
+
+    println!("tuple.into = {:?}", pt);
 }
