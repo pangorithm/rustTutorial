@@ -7,7 +7,7 @@ struct Person {
 impl AsRef<str> for Person {
     // Person의 name을 str 형태로 참조 할 수 있다.
     fn as_ref(&self) -> &str {
-        &self.name
+        &self.name // String이 Deref 트레이트를 통해 &str로 자동 변환
     }
 }
 
