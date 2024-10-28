@@ -1,25 +1,31 @@
-#[derive(Debug, Clone, Copy)]
-struct Point {
-    x: i32,
-    y: i32,
+#[derive(Debug)]
+struct Person {
+    name: String,
+    age: u32,
+    cloned: bool,
 }
 
-fn add_points(p1: Point, p2: Point) -> Point {
-    Point {
-        x: p1.x + p2.x,
-        y: p1.y + p2.y,
+// Person을 복제한다. Copy과는 다르게 값을 직접 설정할 수 있다
+impl Clone for Person {
+    fn clone(&self) -> Self {
+        Person {
+            name: self.name.clone(),
+            age: self.age,
+            cloned: true,
+        }
     }
 }
 
 fn main() {
-    let a = Point { x: 1, y: 2 };
-    let b = Point { x: 3, y: 4 };
+    let person1 = Person {
+        name: String::from("루나"),
+        age: 10,
+        cloned: false,
+    };
 
-    // add_point의 인자로 들어가는 a, b는 copy 트레잇에 의해 복제됩니다.
-    // 소유권을 잃지 않습니다.
-    let result = add_points(a, b);
+    // person1을 복제합니다. 소유권을 잃지 않습니다.
+    let person2 = person1.clone();
 
-    println!("{:?}", a); // a에 접근 가능
-    println!("{:?}", b); // b에 접근 가능
-    println!("{:?}", result);
+    println!("{:?}", person1);
+    println!("{:?}", person2);
 }
