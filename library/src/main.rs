@@ -1,28 +1,31 @@
 #[derive(Debug)]
-struct Point {
-    x: i32,
-    y: i32,
+struct Person {
+    name: String,
+    age: u32,
 }
 
-impl From<(i32, i32)> for Point {
-    fn from(tuple: (i32, i32)) -> Self {
-        Point {
-            x: tuple.0,
-            y: tuple.1,
-        }
+impl AsRef<str> for Person {
+    // Person의 name을 str 형태로 참조 할 수 있다.
+    fn as_ref(&self) -> &str {
+        &self.name
     }
 }
 
+fn greet_person<P: AsRef<str>>(person: P) {
+    println!("안녕! {}", person.as_ref());
+}
+
 fn main() {
-    let tuple = (1, 2);
+    let person = Person {
+        name: String::from("루나"),
+        age: 30,
+    };
 
-    // 주어진 tuple을 바탕으로 Point 객체 생성
-    let pt: Point = Point::from(tuple);
+    // Person 구조체에 AsRef<str>을 구현했기 때문에,
+    // greet_person 함수는 Person을 인자로 받아 사용할 수 있다
+    greet_person(person);
 
-    println!("Point::from = {:?}", pt);
-
-    // tuple을 기반으로 point를 생성. 이때 Point::from이 호출된다.
-    let pt: Point = tuple.into();
-
-    println!("tuple.into = {:?}", pt);
+    // String과 &str도 greet_person 함수 호출이 가능하다.
+    greet_person(String::from("러스트"));
+    greet_person("하이!");
 }
