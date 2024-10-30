@@ -1,16 +1,23 @@
-use std::fs;
+use std::path::{Path, PathBuf};
 
-fn main() -> std::io::Result<()> {
-    // 현재 디렉터리의 파일 및 디렉터리 목록 읽기
-    let entries = fs::read_dir(".")?;
+fn main() {
+    // Path 생성
+    let path = Path::new("/tmp/test.txt");
 
-    // 각 항목을 반복하면서 이름을 출력한다.
-    for entry in entries {
-        let entry = entry?;
-        let file_name = entry.file_name();
-        let file_name_str = file_name.to_string_lossy();
-        println!("{}", file_name_str);
+    // 경로의 파일명 추출
+    if let Some(filename) = path.file_name() {
+        println!("파일명: {:?}", filename);
     }
 
-    Ok(())
+    // 경로의 확장자 추출
+    if let Some(extension) = path.extension() {
+        println!("확장자: {:?}", extension)
+    }
+
+    // 경로 조작하기 위한 PathBuf 생성
+    let mut path_buf = PathBuf::from("/tmp/foo");
+
+    // 경로에 파일명 추가
+    path_buf.push("example.txt");
+    println!("전체 경로: {:?}", path_buf);
 }
