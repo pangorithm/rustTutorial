@@ -1,18 +1,15 @@
-use std::process;
-use std::process::Command;
+use std::fs::File;
+use std::io::{self, Read, Write};
 
-fn main() {
-    // 쉘에서 echo를 실행
-    let echo = Command::new("echo")
-        .arg("echo 실행") // "echo 실행"이라는 인자를 추가한다.
-        .output()
-        .expect("echo 실행 실패");
+fn main() -> io::Result<()> {
+    let mut file = File::create("example.txt")?; // 파일 생성
+    file.write_all(b"Hello, Rust")?; // 파일에 내용 추가
 
-    // 명령어의 출력을 UTF-8 문자열로 변환
-    let ret = String::from_utf8_lossy(&echo.stdout);
+    // 파일 읽기
+    let mut file = File::open("example.txt")?;
+    let mut content = String::new();
+    file.read_to_string(&mut content)?;
+    println!("{}", content);
 
-    println!("결과: {}", ret);
-
-    let pid = process::id(); // 현재 실행중인 프로세스의 pid 획득
-    println!("Process ID: {}", pid);
+    Ok(())
 }
