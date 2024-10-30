@@ -1,14 +1,15 @@
 use std::env;
 
 fn main() {
-    for (index, argument) in env::args().enumerate() {
-        println!("인자 #{}: {}", index, argument);
+    // my_env라는 환경변수를 설정
+    env::set_var("my_env", "my_value");
+
+    // 환경변수 읽기
+    match env::var("my_env") {
+        Ok(value) => println!("my_env = {}", value),
+        Err(e) => println!("my_env 읽기 오류: {}", e),
     }
+
+    // 환경변수 제거
+    env::remove_var("my_env");
 }
-/*
-# cargo run test
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
-     Running `target/debug/system_call test`
-인자 #0: target/debug/system_call
-인자 #1: test
-*/
