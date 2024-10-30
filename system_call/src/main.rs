@@ -1,23 +1,34 @@
-use std::path::{Path, PathBuf};
+use std::fs;
+use std::io;
 
-fn main() {
-    // Path 생성
-    let path = Path::new("/tmp/test.txt");
+fn list_files_and_directories(path: &std::path::Path, depth: usize) -> io::Result<()> {
+    // 주어진 경로가 디렉터리인지 확인합니다.
+    if path.is_dir() {
+        // 디렉터리의 모든 항목을 읽습니다.
+        let entries = fs::read_dir(path)?;
+        for entry in entries {
+            let entry = entry?;
+            let entry_path = entry.path();
+            // 항목의 이름을 추출합니다.
+            let file_name = entry_path
+                .file_name()
+                .and_then(|os_str| os_str.to_str())
+                .unwrap_or("");
+            println!("{:indent$}{}", "", file_name, indent = depth);
 
-    // 경로의 파일명 추출
-    if let Some(filename) = path.file_name() {
-        println!("파일명: {:?}", filename);
+            // 항목이 디렉터리인 경우, 해당 디렉터리 내의 파일 및 서브디렉터리를 출력하기 위해 재귀적으로 호출한다.
+            if entry_path.is_dir() {
+                list_files_and_directories(&entry_path, depth + 2)?;
+            }
+        }
     }
+    Ok(())
+}
 
-    // 경로의 확장자 추출
-    if let Some(extension) = path.extension() {
-        println!("확장자: {:?}", extension)
-    }
+fn main() -> io::Result<()> {
+    let current_dir = std::env::current_dir()?;
+    println!("{}", current_dir.display());
+    list_files_and_directories(&current_dir, 0)?;
 
-    // 경로 조작하기 위한 PathBuf 생성
-    let mut path_buf = PathBuf::from("/tmp/foo");
-
-    // 경로에 파일명 추가
-    path_buf.push("example.txt");
-    println!("전체 경로: {:?}", path_buf);
+    Ok(())
 }
