@@ -1,15 +1,16 @@
-use std::fs::File;
-use std::io::{self, Read, Write};
+use std::fs;
 
-fn main() -> io::Result<()> {
-    let mut file = File::create("example.txt")?; // 파일 생성
-    file.write_all(b"Hello, Rust")?; // 파일에 내용 추가
+fn main() -> std::io::Result<()> {
+    // 현재 디렉터리의 파일 및 디렉터리 목록 읽기
+    let entries = fs::read_dir(".")?;
 
-    // 파일 읽기
-    let mut file = File::open("example.txt")?;
-    let mut content = String::new();
-    file.read_to_string(&mut content)?;
-    println!("{}", content);
+    // 각 항목을 반복하면서 이름을 출력한다.
+    for entry in entries {
+        let entry = entry?;
+        let file_name = entry.file_name();
+        let file_name_str = file_name.to_string_lossy();
+        println!("{}", file_name_str);
+    }
 
     Ok(())
 }
