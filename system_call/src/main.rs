@@ -1,15 +1,19 @@
-use std::os::unix::fs::PermissionsExt;
-use std::path::Path;
+use std::fs::File;
+use std::io::Read;
+use std::os::unix::io::{FromRawFd, IntoRawFd};
 
 fn main() {
-    // 사전에 touch test.txt 파일을 만든다.
-    let path = Path::new("test.txt");
-    let metadata = path.metadata().unwrap();
+    // test.txt를 연다.
+    let f = File::open("test.txt").unwrap();
 
-    // 리눅스에서만 작동한다.
-    let permissions = metadata.permissions();
-    let mode = permissions.mode();
-    println!("파일 접근 권한: {:o}", mode);
-    // -rw-r--r--  1 root root    0 Oct 30 19:55 test.txt
-    // 파일 접근 권한: 100644
+    // f의 파일 서술자를 획득한다
+    let fd = f.into_raw_fd();
+
+    // 파일 서술자로부터 File 객체를 생성한다.
+    let mut f = unsafe { File::from_raw_fd(fd) };
+
+    // 파일 내용을 출력한다.
+    let mut contents = String::new();
+    f.read_to_string(&mut contents).expect("파일 읽기 실패");
+    println!("{}", contents);
 }
