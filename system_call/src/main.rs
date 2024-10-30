@@ -1,15 +1,15 @@
 use std::env;
 
 fn main() {
-    // my_env라는 환경변수를 설정
-    env::set_var("my_env", "my_value");
-
-    // 환경변수 읽기
-    match env::var("my_env") {
-        Ok(value) => println!("my_env = {}", value),
-        Err(e) => println!("my_env 읽기 오류: {}", e),
+    match env::current_dir() {
+        Ok(path) => println!("현재 경로: {:?}", path),
+        Err(e) => println!("현재 경로 획득 실패: {}", e),
     }
 
-    // 환경변수 제거
-    env::remove_var("my_env");
+    match env::temp_dir().to_str() {
+        Some(path) => println!("임시 경로: {}", path),
+        None => println!("임시경로 확인 불가"),
+    }
 }
+// 현재 경로: "/root/git/rustTutorial/system_call"
+// 임시 경로: /tmp
