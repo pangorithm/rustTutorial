@@ -1,10 +1,26 @@
+use std::thread::sleep;
+use std::time::Duration;
 use std::time::SystemTime;
 
 fn main() {
-    // 현재 시스템 시간을 가져온다.
-    let now = SystemTime::now();
+    let tm = SystemTime::now();
 
-    // 현재 시스템 시간을 디버그 형식으로 출력한다.
-    println!("{:?}", now);
-    // SystemTime { tv_sec: 1730547487, tv_nsec: 510123098 }
+    println!("1초 대기!");
+    sleep(Duration::from_secs(1));
+
+    match tm.elapsed() {
+        // 시간 측정
+        Ok(elapsed) => {
+            println!(
+                "대기 시간: {}.{}초",
+                elapsed.as_secs(),
+                elapsed.subsec_millis()
+            );
+        }
+        Err(e) => {
+            println!("오류 발생: {:?}", e);
+        }
+    }
 }
+// 1초 대기!
+// 대기 시간: 1.0초
