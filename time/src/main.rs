@@ -1,26 +1,12 @@
-use std::thread::sleep;
 use std::time::Duration;
 use std::time::SystemTime;
 
 fn main() {
-    let tm = SystemTime::now();
+    let now = SystemTime::now();
+    let after = now + Duration::from_secs(3);
 
-    println!("1초 대기!");
-    sleep(Duration::from_secs(1));
-
-    match tm.elapsed() {
-        // 시간 측정
-        Ok(elapsed) => {
-            println!(
-                "대기 시간: {}.{}초",
-                elapsed.as_secs(),
-                elapsed.subsec_millis()
-            );
-        }
-        Err(e) => {
-            println!("오류 발생: {:?}", e);
-        }
-    }
+    println!("현재시간: {:?}", now);
+    println!("+3초: {:?}", after);
+    // 현재시간: SystemTime { tv_sec: 1730547893, tv_nsec: 96390848 }
+    // +3초: SystemTime { tv_sec: 1730547896, tv_nsec: 96390848 }
 }
-// 1초 대기!
-// 대기 시간: 1.0초
