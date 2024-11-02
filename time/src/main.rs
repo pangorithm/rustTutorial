@@ -1,18 +1,20 @@
-use chrono::Local;
+use chrono::offset::TimeZone;
+use chrono::{FixedOffset, Local, Utc};
 
 fn main() {
-    // 현재 로컬 날짜와 시간을 가져온다.
-    let now = Local::now();
+    // UTC 시간 획득
+    let now_utc = Utc::now();
+    println!("Utc 시각: {}", now_utc);
 
-    println!("{}", now.format("%Y-%m-%d")); // YYYY-MM-DD
+    // 로컬 시간
+    let now_local = Local::now();
+    println!("Local 시각: {}", now_local);
 
-    println!("{}", now.format("%H:%M:%S")); // HH:MM:SS
-
-    println!(
-        "{}",
-        now.format("오늘은 %A, %B, %d, %y. 현재 시간은%Y-%m-%d")
-    );
+    // 서울 시간 획득 UTC+9
+    let seoul_offset = FixedOffset::east(9 * 3600); // +9
+    let seoul = seoul_offset.from_utc_datetime(&now_utc.naive_utc());
+    println!("한국 시각: {}", seoul);
 }
-// 2024-11-02
-// 20:49:43
-// 오늘은 Saturday, November, 02, 24. 현재 시간은2024-11-02
+// Utc 시각: 2024-11-02 11:56:14.679871697 UTC
+// Local 시각: 2024-11-02 20:56:14.679901283 +09:00
+// 한국 시각: 2024-11-02 20:56:14.679871697 +09:00
