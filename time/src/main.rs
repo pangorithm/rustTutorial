@@ -1,12 +1,18 @@
-use std::time::Duration;
-use std::time::SystemTime;
+use chrono::Local;
 
 fn main() {
-    let now = SystemTime::now();
-    let after = now + Duration::from_secs(3);
+    // 현재 로컬 날짜와 시간을 가져온다.
+    let now = Local::now();
 
-    println!("현재시간: {:?}", now);
-    println!("+3초: {:?}", after);
-    // 현재시간: SystemTime { tv_sec: 1730547893, tv_nsec: 96390848 }
-    // +3초: SystemTime { tv_sec: 1730547896, tv_nsec: 96390848 }
+    println!("{}", now.format("%Y-%m-%d")); // YYYY-MM-DD
+
+    println!("{}", now.format("%H:%M:%S")); // HH:MM:SS
+
+    println!(
+        "{}",
+        now.format("오늘은 %A, %B, %d, %y. 현재 시간은%Y-%m-%d")
+    );
 }
+// 2024-11-02
+// 20:49:43
+// 오늘은 Saturday, November, 02, 24. 현재 시간은2024-11-02
