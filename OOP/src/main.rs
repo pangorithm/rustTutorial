@@ -1,36 +1,62 @@
-// Hello라는 트레잇을 정의한다. 이 트레잇은 hello_msg 메서드를 가져야 한다.
-trait Hello {
-    fn hello_msg(&self) -> String; // hello_msg 메서드는 String을 반환해야 하며, 이를 구현하는 타입에서 정의해야 한다.
+trait Pointable {
+    // 인터페이스 정의
+    fn x(&self) -> i32;
+    fn y(&self) -> i32;
 }
 
-// say_hello 함수는 Hello 트레잇을 구현하는 어떠한 타입의 참조도 받을 수 있다.
-// 이 함수는 전달받은 타입의 hello_msg 메서드를 호출하고 그 결과를 출력한다.
-fn say_hello(say: &dyn Hello) {
-    println!("{}", say.hello_msg());
+struct Point {
+    x: i32,
+    y: i32,
 }
 
-struct Student {}
+impl Pointable for Point {
+    // Point에 Pointable 인터페이스를 구현한다.
+    fn x(&self) -> i32 {
+        self.x
+    }
 
-impl Hello for Student {
-    fn hello_msg(&self) -> String {
-        String::from("안녕하세요! 선생님,")
+    fn y(&self) -> i32 {
+        self.y
     }
 }
 
-struct Teacher {}
+fn print_pointable(pointable: &dyn Pointable) {
+    println!("x: {}, y: {}", pointable.x(), pointable.y());
+}
 
-impl Hello for Teacher {
-    fn hello_msg(&self) -> String {
-        String::from("안녕하세요! 오늘 수업은...")
+// ColorPoint는 Point를 확장한 하위 클래스처럼 작동한다.
+// 러스트는 상속을 제공하지 않기 때문에 내부적으로 point 인스턴스를 가지고 있다.
+// 그리고 부모 클래스의 함수를 호출하는 것처럼 만들기 위해 point 인스턴스의 함수를 호출한다.
+struct ColorPoint {
+    color: String,
+    point: Point,
+}
+
+impl ColorPoint {
+    fn new(color: String, x: i32, y: i32) -> ColorPoint {
+        ColorPoint {
+            color: color,
+            point: Point { x: x, y: y },
+        }
+    }
+
+    fn color(&self) -> &String {
+        &self.color
+    }
+}
+
+impl Pointable for ColorPoint {
+    fn x(&self) -> i32 {
+        self.point.x
+    }
+
+    fn y(&self) -> i32 {
+        self.point.y
     }
 }
 
 fn main() {
-    let student = Student {};
-    let teacher = Teacher {};
-
-    say_hello(&student);
-    // 안녕하세요! 선생님,
-    say_hello(&teacher);
-    // 안녕하세요! 오늘 수업은...
+    let pt = ColorPoint::new(String::from("red"), 1, 2);
+    print_pointable(&pt);
+    // x: 1, y: 2
 }
